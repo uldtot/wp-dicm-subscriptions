@@ -1,10 +1,10 @@
 <?php
-
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 /**
  * Plugin Name: Subscriptions
  * Plugin URI: https://example.com/subscriptions
  * Description: Et simpelt abonnementssystem til WordPress.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Dit Navn
  * Author URI: https://example.com
  * License: GPL-2.0+
@@ -80,20 +80,6 @@ class SubscriptionsPlugin
         // Callback from payment gateway
         add_action('wp_ajax_paymentSuccessCallback', [$this, 'paymentSuccessCallback_function']);
         add_action('wp_ajax_nopriv_paymentSuccessCallback', [$this, 'paymentSuccessCallback_function']); // Hvis ikke-logged-in brugere også skal kunne kalde den
-
-
-        require './plugin-update-checker/plugin-update-checker.php';
-        use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-
-        $myUpdateChecker = PucFactory::buildUpdateChecker(
-            'https://github.com/uldtot/wp-dicm-subscriptions',
-            __FILE__,
-            'wp-dicm-subscriptions'
-        );
-
-        //Set the branch that contains the stable release.
-        $myUpdateChecker->setBranch('main');
-
     }
 
 
@@ -443,6 +429,21 @@ class SubscriptionsPlugin
 
     public function register_settings()
     {
+		
+		
+        require dirname(__FILE__).'/plugin-update-checker/plugin-update-checker.php';
+     
+        $myUpdateChecker = PucFactory::buildUpdateChecker(
+            'https://github.com/uldtot/wp-dicm-subscriptions/',
+            __FILE__,
+            'wp-dicm-subscriptions'
+        );
+
+        //Set the branch that contains the stable release.
+        $myUpdateChecker->setBranch('main');
+
+		
+		
         register_setting('subscriptions_options_group', $this->option_name);
         register_setting('subscriptions_options_group', $this->economic_api_token);
         register_setting('subscriptions_options_group', $this->economic_app_secret);
